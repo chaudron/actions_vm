@@ -43,5 +43,8 @@ jobs:
       run:  sudo apt install -y libunbound-dev libunwind-dev
 
     - name: install vagrant?
+      run:  sudo apt install virtualbox
+      run:  curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
+      run:  sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+      run:  sudo apt-get update && sudo apt-get install vagrant
       run:  echo "EELCO"
-
