@@ -1,0 +1,47 @@
+name: Build and Datapath Tests
+
+on: [push, pull_request]
+
+jobs:
+  build-linux:
+    env:
+      dependencies: |
+        automake libtool gcc bc libjemalloc1 libjemalloc-dev    \
+        libssl-dev llvm-dev libelf-dev libnuma-dev libpcap-dev  \
+        ninja-build selinux-policy-dev
+      deb_dependencies: |
+        linux-headers-$(uname -r) build-essential fakeroot devscripts equivs
+
+    name: Datapath Tests
+    runs-on: ubuntu-20.04
+    timeout-minutes: 30
+
+    steps:
+    - name: checkout
+      uses: actions/checkout@v2
+
+    - name: update PATH
+      run:  |
+        echo "$HOME/bin"        >> $GITHUB_PATH
+        echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+    - name: set up python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.9'
+
+    - name: update APT cache
+      run:  sudo apt update || true
+
+    - name: install common dependencies
+      run:  sudo apt install -y ${{ env.dependencies }}
+
+    - name: install dependencies for debian packages
+      run:  sudo apt install -y ${{ env.deb_dependencies }}
+
+    - name: install libunbound libunwind
+      run:  sudo apt install -y libunbound-dev libunwind-dev
+
+    - name: install vagrant?
+      run:  echo "EELCO"
+
